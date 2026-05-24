@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+.git/
+.env
+ffmpeg.exe
+ffprobe.exe
+video_info.json
+*.pyc
+*.pyo
+Dockerfile
+.dockerignore
+iniciar_bot.bat
+download_ffmpeg.py
+analyze_audio.py

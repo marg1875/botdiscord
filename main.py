@@ -700,9 +700,31 @@ async def on_command_error(ctx, error):
         await ctx.send(f"⚠️ Ocurrió un error al procesar el comando: `{error}`")
 
 
+# Servidor HTTP de salud para Hugging Face Spaces (requiere puerto 7860)
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+    def log_message(self, format, *args):
+        pass
+
+def start_health():
+    server = HTTPServer(("0.0.0.0", 7860), HealthHandler)
+    server.serve_forever()
+
+threading.Thread(target=start_health, daemon=True).start()
+print("🩺 Health server iniciado en puerto 7860")
+
 # Ejecutar el Bot
 if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
-    print("[Error] ¡El token del bot no está configurado en el archivo .env!")
-    print("Abre el archivo '.env' y reemplaza 'TU_TOKEN_AQUI' con el token real de tu bot.")
+    print("[Error] ¡El token del bot no está configurado!")
+    print("Configura la variable de entorno DISCORD_TOKEN (en HF: Settings > Secrets).")
+    import time
+    while True:
+        time.sleep(60)
 else:
     bot.run(TOKEN)
