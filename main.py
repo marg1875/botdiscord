@@ -53,9 +53,18 @@ ytdl_format_options = {
     'logtostderr': False,
     'quiet': True,
     'no_warnings': True,
-    'default_search': 'ytsearch',  # Búsqueda automática en YouTube si no es enlace
+    'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
+    'http_headers': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
+    },
+    'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
 }
+
+# Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
+if os.path.exists('cookies.txt'):
+    ytdl_format_options['cookiefile'] = 'cookies.txt'
 
 ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
