@@ -70,18 +70,24 @@ ytdl_format_options = {
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
+print("[DIAG] Verificando YOUTUBE_COOKIES...")
 youtube_cookies = os.getenv('YOUTUBE_COOKIES')
 if youtube_cookies:
-    with open('cookies.txt', 'w') as f:
-        f.write(youtube_cookies)
-    print(f"Cookies de YouTube cargadas ({len(youtube_cookies)} chars)")
+    try:
+        with open('cookies.txt', 'w', encoding='utf-8') as f:
+            f.write(youtube_cookies)
+        print(f"[DIAG] Cookies de YouTube guardadas ({len(youtube_cookies)} chars, {os.path.getsize('cookies.txt')} bytes)")
+    except Exception as e:
+        print(f"[DIAG] ERROR al escribir cookies.txt: {e}")
+else:
+    print("[DIAG] YOUTUBE_COOKIES NO configurado en Secrets")
 
 # Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
 if os.path.exists('cookies.txt'):
-    print(f"cookies.txt detectado ({os.path.getsize('cookies.txt')} bytes)")
+    print(f"[DIAG] cookies.txt listo, se usara en yt-dlp")
     ytdl_format_options['cookiefile'] = 'cookies.txt'
 else:
-    print("cookies.txt NO encontrado - YouTube puede requerir verificacion")
+    print("[DIAG] cookies.txt NO existe - YouTube puede pedir verificacion")
 
 ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -176,9 +182,6 @@ def get_music_state(guild_id):
 
 @bot.event
 async def on_ready():
-    global _conn_timeout
-    if _conn_timeout:
-        _conn_timeout.cancel()
     print("==================================================")
     print(f" ¡Bot conectado con éxito como {bot.user.name}!")
     print(f" ID del Bot: {bot.user.id}")
@@ -769,6 +772,4 @@ else:
         print(f"Test de conexion fallo: {e}")
     
     print("Iniciando bot...")
-    _conn_timeout = threading.Timer(45, lambda: os._exit(1))
-    _conn_timeout.start()
     bot.run(TOKEN)
