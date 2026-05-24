@@ -19,18 +19,6 @@ intents.voice_states = True     # Permite gestionar conexiones a canales de voz
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 
-# Forzar IPv4 y timeouts en el conector HTTP (HF Spaces tiene mala conectividad)
-import socket
-try:
-    import aiohttp
-    bot.http.connector = aiohttp.TCPConnector(
-        family=socket.AF_INET,
-        ttl_dns_cache=300,
-    )
-    print("Conector HTTP configurado: IPv4 solo")
-except Exception as e:
-    print(f"No se pudo configurar conector personalizado: {e}")
-
 # Clase de Contexto Personalizada para auto-borrar respuestas
 class CleanContext(commands.Context):
     async def send(self, content=None, **kwargs):

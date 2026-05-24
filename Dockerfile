@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libopus0 \
     gcc \
     libffi-dev \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 user
