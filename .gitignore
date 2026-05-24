@@ -1,0 +1,21 @@
+# Entorno virtual
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Variables de entorno (contiene el token, nunca subir)
+.env
+
+# Binarios de FFmpeg (se descargan con download_ffmpeg.py)
+ffmpeg.exe
+ffprobe.exe
+
+# Caché de yt-dlp
+video_info.json
+
+# Archivos temporales de yt-dlp
+*.part
+*.ytdl
