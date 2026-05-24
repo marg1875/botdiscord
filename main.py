@@ -44,7 +44,7 @@ async def auto_delete_command(ctx):
 
 # Opciones de yt-dlp
 ytdl_format_options = {
-    'format': 'bestaudio/best',
+    'format': 'bestaudio[ext=m4a]/bestaudio/best',
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
@@ -59,7 +59,6 @@ ytdl_format_options = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
     },
-    'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
