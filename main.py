@@ -48,14 +48,13 @@ ytdl_format_options = {
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
-    'nocheckcertificate': False,
+    'nocheckcertificate': True,
     'ignoreerrors': False,
     'logtostderr': False,
     'quiet': False,
     'no_warnings': False,
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
-    'extractor_args': {'youtube': {'player_client': ['android']}},
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
