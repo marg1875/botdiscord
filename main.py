@@ -55,6 +55,7 @@ ytdl_format_options = {
     'no_warnings': False,
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
+    'extractor_args': {'youtube': {'player_client': ['ios']}},
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
