@@ -720,9 +720,11 @@ async def on_command_error(ctx, error):
         await ctx.send(f"⚠️ Ocurrió un error al procesar el comando: `{error}`")
 
 
-# Servidor HTTP de salud para Hugging Face Spaces (requiere puerto 7860)
+# Servidor HTTP de salud para Hugging Face Spaces / Render (requiere puerto abierto)
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
+
+HEALTH_PORT = int(os.getenv('PORT', 7860))
 
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -733,11 +735,11 @@ class HealthHandler(BaseHTTPRequestHandler):
         pass
 
 def start_health():
-    server = HTTPServer(("0.0.0.0", 7860), HealthHandler)
+    server = HTTPServer(("0.0.0.0", HEALTH_PORT), HealthHandler)
     server.serve_forever()
 
 threading.Thread(target=start_health, daemon=True).start()
-print("🩺 Health server iniciado en puerto 7860")
+print(f"🩺 Health server iniciado en puerto {HEALTH_PORT}")
 
 # Ejecutar el Bot
 if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
