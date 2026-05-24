@@ -55,7 +55,6 @@ ytdl_format_options = {
     'no_warnings': False,
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
-    'extractor_args': {'youtube': {'player_client': ['mweb', 'web']}},
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
@@ -77,6 +76,17 @@ if os.path.exists('cookies.txt'):
     ytdl_format_options['cookiefile'] = 'cookies.txt'
 else:
     print("[DIAG] cookies.txt NO existe - YouTube puede pedir verificacion")
+
+# Verificar runtime de JS para el challenge solver
+import subprocess as _sp
+_ytver = yt_dlp.version.__version__
+print(f"[DIAG] yt-dlp version: {_ytver}")
+for _js in ['node', 'nodejs']:
+    try:
+        _r = _sp.run([_js, '--version'], capture_output=True, text=True, timeout=5)
+        print(f"[DIAG] {_js}: {_r.stdout.strip()}")
+    except Exception:
+        pass
 
 ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
