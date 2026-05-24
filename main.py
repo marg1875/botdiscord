@@ -62,6 +62,12 @@ ytdl_format_options = {
     'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
 }
 
+# Escribir cookies desde variable de entorno (HF Secret) si existe
+youtube_cookies = os.getenv('YOUTUBE_COOKIES')
+if youtube_cookies:
+    with open('cookies.txt', 'w') as f:
+        f.write(youtube_cookies)
+
 # Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
 if os.path.exists('cookies.txt'):
     ytdl_format_options['cookiefile'] = 'cookies.txt'

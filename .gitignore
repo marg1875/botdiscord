@@ -16,6 +16,9 @@ ffprobe.exe
 # Caché de yt-dlp
 video_info.json
 
+# Cookies de YouTube (se pasan por Secret en HF)
+cookies.txt
+
 # Archivos temporales de yt-dlp
 *.part
 *.ytdl
