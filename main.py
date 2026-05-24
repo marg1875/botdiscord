@@ -734,7 +734,7 @@ def start_health():
 threading.Thread(target=start_health, daemon=True).start()
 print("🩺 Health server iniciado en puerto 7860")
 
-# Ejecutar el Bot
+# Ejecutar el Bot con reintentos automaticos
 if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
     print("[Error] ¡El token del bot no está configurado!")
     print("Configura la variable de entorno DISCORD_TOKEN (en HF: Settings > Secrets).")
@@ -742,4 +742,17 @@ if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
     while True:
         time.sleep(60)
 else:
-    bot.run(TOKEN)
+    max_retries = 5
+    for attempt in range(1, max_retries + 1):
+        try:
+            print(f"Conectando a Discord (intento {attempt}/{max_retries})...")
+            bot.run(TOKEN)
+        except Exception as e:
+            print(f"Error de conexion: {e}")
+            if attempt < max_retries:
+                wait = attempt * 10
+                print(f"Reintentando en {wait}s...")
+                import time
+                time.sleep(wait)
+            else:
+                print("Demasiados intentos fallidos. Saliendo.")
