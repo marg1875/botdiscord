@@ -164,6 +164,9 @@ def get_music_state(guild_id):
 
 @bot.event
 async def on_ready():
+    global _conn_timeout
+    if _conn_timeout:
+        _conn_timeout.cancel()
     print("==================================================")
     print(f" ¡Bot conectado con éxito como {bot.user.name}!")
     print(f" ID del Bot: {bot.user.id}")
@@ -741,4 +744,6 @@ if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
     while True:
         time.sleep(60)
 else:
+    _conn_timeout = threading.Timer(60, lambda: os._exit(1))
+    _conn_timeout.start()
     bot.run(TOKEN)
