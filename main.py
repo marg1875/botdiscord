@@ -56,21 +56,17 @@ async def auto_delete_command(ctx):
 
 # Opciones de yt-dlp
 ytdl_format_options = {
-    'format': 'bestaudio[ext=m4a]/bestaudio/best',
+    'format': 'bestaudio/best',
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
-    'nocheckcertificate': True,
+    'nocheckcertificate': False,
     'ignoreerrors': False,
     'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
+    'quiet': False,
+    'no_warnings': False,
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
-    'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
-    },
 }
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
@@ -78,10 +74,14 @@ youtube_cookies = os.getenv('YOUTUBE_COOKIES')
 if youtube_cookies:
     with open('cookies.txt', 'w') as f:
         f.write(youtube_cookies)
+    print(f"Cookies de YouTube cargadas ({len(youtube_cookies)} chars)")
 
 # Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
 if os.path.exists('cookies.txt'):
+    print(f"cookies.txt detectado ({os.path.getsize('cookies.txt')} bytes)")
     ytdl_format_options['cookiefile'] = 'cookies.txt'
+else:
+    print("cookies.txt NO encontrado - YouTube puede requerir verificacion")
 
 ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
