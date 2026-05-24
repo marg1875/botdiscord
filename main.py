@@ -19,6 +19,18 @@ intents.voice_states = True     # Permite gestionar conexiones a canales de voz
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 
+# Forzar IPv4 y timeouts en el conector HTTP (HF Spaces tiene mala conectividad)
+import socket
+try:
+    import aiohttp
+    bot.http.connector = aiohttp.TCPConnector(
+        family=socket.AF_INET,
+        ttl_dns_cache=300,
+    )
+    print("Conector HTTP configurado: IPv4 solo")
+except Exception as e:
+    print(f"No se pudo configurar conector personalizado: {e}")
+
 # Clase de Contexto Personalizada para auto-borrar respuestas
 class CleanContext(commands.Context):
     async def send(self, content=None, **kwargs):
@@ -744,6 +756,19 @@ if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
     while True:
         time.sleep(60)
 else:
-    _conn_timeout = threading.Timer(60, lambda: os._exit(1))
+    # Verificar conectividad antes de arrancar
+    import subprocess, sys
+    print("Verificando conectividad a Discord...")
+    try:
+        result = subprocess.run(
+            ["python", "-c", "import socket; s=socket.socket(socket.AF_INET); s.settimeout(10); s.connect(('discord.com', 443)); print('OK'); s.close()"],
+            capture_output=True, text=True, timeout=15
+        )
+        print(f"Test de conexion: {result.stdout.strip() or result.stderr.strip()}")
+    except Exception as e:
+        print(f"Test de conexion fallo: {e}")
+    
+    print("Iniciando bot...")
+    _conn_timeout = threading.Timer(45, lambda: os._exit(1))
     _conn_timeout.start()
     bot.run(TOKEN)
