@@ -61,33 +61,6 @@ ytdl_format_options = {
     }},
 }
 
-# Si hay cookies, guardarlas en disco pero NO usarlas con clientes moviles
-# (android/ios no soportan cookies, y web trigger el n challenge)
-if os.path.exists('cookies.txt'):
-    print(f"[DIAG] cookies.txt presente pero NO se usara (clientes moviles no las soportan)")
-else:
-    print("[DIAG] cookies.txt NO existe - usando clientes moviles sin auth")
-
-# Escribir cookies desde variable de entorno (HF Secret) si existe
-print("[DIAG] Verificando YOUTUBE_COOKIES...")
-youtube_cookies = os.getenv('YOUTUBE_COOKIES')
-if youtube_cookies:
-    try:
-        with open('cookies.txt', 'w', encoding='utf-8') as f:
-            f.write(youtube_cookies)
-        print(f"[DIAG] Cookies de YouTube guardadas ({len(youtube_cookies)} chars, {os.path.getsize('cookies.txt')} bytes)")
-    except Exception as e:
-        print(f"[DIAG] ERROR al escribir cookies.txt: {e}")
-else:
-    print("[DIAG] YOUTUBE_COOKIES NO configurado en Secrets")
-
-# Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
-if os.path.exists('cookies.txt'):
-    print(f"[DIAG] cookies.txt listo, se usara en yt-dlp")
-    ytdl_format_options['cookiefile'] = 'cookies.txt'
-else:
-    print("[DIAG] cookies.txt NO existe - YouTube puede pedir verificacion")
-
 # Verificar runtime de JS para el challenge solver
 import subprocess as _sp
 _ytver = yt_dlp.version.__version__
