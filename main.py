@@ -61,13 +61,12 @@ ytdl_format_options = {
     }},
 }
 
-# Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
-_COOKIES_OK = False
+# Si hay cookies, guardarlas en disco pero NO usarlas con clientes moviles
+# (android/ios no soportan cookies, y web trigger el n challenge)
 if os.path.exists('cookies.txt'):
-    print(f"[DIAG] cookies.txt listo, intentando usar...")
-    ytdl_format_options['cookiefile'] = 'cookies.txt'
+    print(f"[DIAG] cookies.txt presente pero NO se usara (clientes moviles no las soportan)")
 else:
-    print("[DIAG] cookies.txt NO existe")
+    print("[DIAG] cookies.txt NO existe - usando clientes moviles sin auth")
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
 print("[DIAG] Verificando YOUTUBE_COOKIES...")
