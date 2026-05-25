@@ -171,7 +171,7 @@ async def on_ready():
     print(f" Prefijo configurado: '{PREFIX}'")
     print("==================================================")
     # Cambiar presencia
-    await bot.change_presence(activity=discord.Streaming(name=f"{PREFIX}help | Música", url="https://www.twitch.tv/hitohugs"))
+    await bot.change_presence(activity=discord.Streaming(name="👓 Hitoha Marui | !help", url="https://www.twitch.tv/hitohugs"))
     # Iniciar limpieza periodica de RAM
     bot.loop.create_task(periodic_cleanup())
 
