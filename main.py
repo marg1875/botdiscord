@@ -55,7 +55,19 @@ ytdl_format_options = {
     'no_warnings': False,
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
+    'extractor_args': {'youtube': {
+        'player_client': ['android', 'ios'],
+        'player_skip': ['js'],
+    }},
 }
+
+# Si hay cookies de YouTube, usarlas (para evitar verificacion de bot en servidores cloud)
+_COOKIES_OK = False
+if os.path.exists('cookies.txt'):
+    print(f"[DIAG] cookies.txt listo, intentando usar...")
+    ytdl_format_options['cookiefile'] = 'cookies.txt'
+else:
+    print("[DIAG] cookies.txt NO existe")
 
 # Escribir cookies desde variable de entorno (HF Secret) si existe
 print("[DIAG] Verificando YOUTUBE_COOKIES...")
