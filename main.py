@@ -73,7 +73,7 @@ for _js in ['node', 'nodejs']:
         pass
 
 ffmpeg_options = {
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -bufsize 512k',
     'options': '-vn',
 }
 
@@ -172,6 +172,28 @@ async def on_ready():
     print("==================================================")
     # Cambiar presencia
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"{PREFIX}help | Música"))
+    # Iniciar limpieza periodica de RAM
+    bot.loop.create_task(periodic_cleanup())
+
+
+async def periodic_cleanup():
+    import gc
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        await asyncio.sleep(1800)  # cada 30 minutos
+        # Limpiar estados de musica de guilds donde el bot ya no esta
+        for guild_id in list(music_states.keys()):
+            guild = bot.get_guild(guild_id)
+            if guild is None or (guild.voice_client is None and not music_states[guild_id].current and not music_states[guild_id].queue):
+                del music_states[guild_id]
+        # Forzar garbage collection
+        gc.collect()
+        # Limpiar cache de yt-dlp
+        try:
+            ytdl.cache.remove()
+        except Exception:
+            pass
+        print(f"[CLEANUP] RAM liberada, {len(music_states)} guilds activos")
 
 
 # Comando de ayuda personalizado
