@@ -56,8 +56,7 @@ ytdl_format_options = {
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
     'extractor_args': {'youtube': {
-        'player_client': ['android', 'ios'],
-        'player_skip': ['js'],
+        'player_client': ['android', 'ios', 'web'],
     }},
 }
 
