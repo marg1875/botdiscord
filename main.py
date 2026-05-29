@@ -56,10 +56,23 @@ ytdl_format_options = {
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
     'extractor_args': {'youtube': {
-        'player_client': ['android', 'ios'],
-        'player_skip': ['js'],
+        'player_client': ['web'],
     }},
 }
+
+# Escribir cookies desde variable de entorno (Render Secret) para cliente web
+print("[DIAG] Verificando YOUTUBE_COOKIES...")
+youtube_cookies = os.getenv('YOUTUBE_COOKIES')
+if youtube_cookies:
+    try:
+        with open('cookies.txt', 'w', encoding='utf-8') as f:
+            f.write(youtube_cookies)
+        print(f"[DIAG] Cookies guardadas ({len(youtube_cookies)} chars)")
+        ytdl_format_options['cookiefile'] = 'cookies.txt'
+    except Exception as e:
+        print(f"[DIAG] ERROR al escribir cookies: {e}")
+else:
+    print("[DIAG] YOUTUBE_COOKIES NO configurado")
 
 # Verificar runtime de JS para el challenge solver
 import subprocess as _sp
