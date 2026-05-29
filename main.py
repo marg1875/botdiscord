@@ -563,11 +563,18 @@ async def play(ctx, *, search: str):
         state.voice_client = ctx.voice_client
 
     async with ctx.typing():
-        try:
-            # Buscar y crear la fuente
-            player = await YTDLSource.from_url(search, loop=bot.loop, stream=True)
-        except Exception as e:
-            return await ctx.send(f"❌ Ocurrió un error al buscar la canción: `{e}`")
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            try:
+                player = await YTDLSource.from_url(search, loop=bot.loop, stream=True)
+                break
+            except Exception as e:
+                err = str(e)
+                if '429' in err or 'Sign in' in err or 'bot' in err.lower():
+                    if attempt < max_retries:
+                        await asyncio.sleep(3)
+                        continue
+                return await ctx.send(f"❌ Ocurrió un error al buscar la canción: `{e}`")
 
         song = {
             'source': player,
