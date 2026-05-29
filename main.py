@@ -56,7 +56,8 @@ ytdl_format_options = {
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
     'extractor_args': {'youtube': {
-        'player_client': ['android', 'ios', 'web'],
+        'player_client': ['android', 'ios'],
+        'player_skip': ['js'],
     }},
 }
 
@@ -85,6 +86,8 @@ ffmpeg_options = {
 ytdl = yt_dlp.YoutubeDL(ytdl_format_options)
 
 class YTDLSource(discord.PCMVolumeTransformer):
+    _last_request = 0  # timestamp del ultimo request a YouTube (rate limiter)
+    
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
         self.data = data
@@ -95,6 +98,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def from_url(cls, search, *, loop=None, stream=True):
         loop = loop or asyncio.get_event_loop()
+        # Rate limiter: minimo 4 seg entre requests para no bannear IP
+        import time as _time
+        elapsed = _time.time() - cls._last_request
+        if elapsed < 4:
+            await asyncio.sleep(4 - elapsed)
+        cls._last_request = _time.time()
         # Buscar en YouTube
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(search, download=not stream))
 
