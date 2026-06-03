@@ -56,15 +56,22 @@ ytdl_format_options = {
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
     'extractor_args': {'youtube': {
-        'player_client': ['android', 'ios'],
-        'player_skip': ['js'],
+        'player_client': ['tv'],
     }},
 }
 
-# Cookies NO se usan - android/ios no las soportan, web = 429 permanente
-print("[DIAG] YOUTUBE_COOKIES detectadas pero NO se usan (clientes moviles)")
+# Escribir cookies para cliente tv (soporta cookies, no requiere PO Token)
+print("[DIAG] Verificando YOUTUBE_COOKIES...")
 youtube_cookies = os.getenv('YOUTUBE_COOKIES')
-if not youtube_cookies:
+if youtube_cookies:
+    try:
+        with open('cookies.txt', 'w', encoding='utf-8') as f:
+            f.write(youtube_cookies)
+        print(f"[DIAG] Cookies guardadas ({len(youtube_cookies)} chars)")
+        ytdl_format_options['cookiefile'] = 'cookies.txt'
+    except Exception as e:
+        print(f"[DIAG] ERROR al escribir cookies: {e}")
+else:
     print("[DIAG] YOUTUBE_COOKIES NO configurado")
 
 # Verificar runtime de JS para el challenge solver
