@@ -56,12 +56,12 @@ ytdl_format_options = {
     'default_search': 'ytsearch',
     'source_address': '0.0.0.0',
     'extractor_args': {'youtube': {
-        'player_client': ['web_safari'],
+        'player_client': ['mweb'],
     }},
 }
 
-# Sin cookies: web_safari usa HLS (m3u8) que no requiere PO Token ni cuenta personal
-print("[DIAG] Modo web_safari - HLS sin cookies ni PO Token")
+# Sin cookies: mweb + PO Token provider genera tokens automaticos
+print("[DIAG] Modo mweb + bgutil PO Token provider")
 
 # Verificar runtime de JS para el challenge solver
 import subprocess as _sp
@@ -774,6 +774,15 @@ def start_health():
 
 threading.Thread(target=start_health, daemon=True).start()
 print(f"🩺 Health server iniciado en puerto {HEALTH_PORT}")
+
+# Iniciar servidor de PO Tokens (bgutil) en segundo plano
+try:
+    import subprocess as _sp2
+    _pot = _sp2.Popen([_sp2.sys.executable, '-m', 'bgutil_ytdlp_pot_provider'], 
+                       stdout=_sp2.DEVNULL, stderr=_sp2.DEVNULL)
+    print("[POT] bgutil PO Token provider iniciado")
+except Exception as e:
+    print(f"[POT] No se pudo iniciar PO Token provider: {e}")
 
 # Ejecutar el Bot
 if not TOKEN or TOKEN == "TU_TOKEN_AQUI":
