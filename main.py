@@ -60,19 +60,8 @@ ytdl_format_options = {
     }},
 }
 
-# Escribir cookies para cliente tv (soporta cookies, no requiere PO Token)
-print("[DIAG] Verificando YOUTUBE_COOKIES...")
-youtube_cookies = os.getenv('YOUTUBE_COOKIES')
-if youtube_cookies:
-    try:
-        with open('cookies.txt', 'w', encoding='utf-8') as f:
-            f.write(youtube_cookies)
-        print(f"[DIAG] Cookies guardadas ({len(youtube_cookies)} chars)")
-        ytdl_format_options['cookiefile'] = 'cookies.txt'
-    except Exception as e:
-        print(f"[DIAG] ERROR al escribir cookies: {e}")
-else:
-    print("[DIAG] YOUTUBE_COOKIES NO configurado")
+# Sin cookies: web_safari usa HLS (m3u8) que no requiere PO Token ni cuenta personal
+print("[DIAG] Modo web_safari - HLS sin cookies ni PO Token")
 
 # Verificar runtime de JS para el challenge solver
 import subprocess as _sp
